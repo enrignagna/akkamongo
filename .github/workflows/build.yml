@@ -1,6 +1,6 @@
 name: CI
 on:
-  push:
+  push: #Act on push event on main and develop branches
     branches:
       - main
       - develop
@@ -25,28 +25,24 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-      - name: Fetch tags
+      - name: Fetch tags #Fetch all tags from remote repository
         shell: bash
         run: git fetch --tags -f
       - name: Populate TAG and BRANCH environment variables
         shell: bash
+        #Setup in the TAG and in BRANCH TAG environment variable
         run: |
           TAG=$(git describe --tags --exact-match HEAD || echo '')
-          echo "Current tag is: '$TAG' (setup in the TAG environment variable)"
+          echo "Current tag is: '$TAG'"
           echo "TAG=$TAG" >> $GITHUB_ENV
           BRANCH=$([ -z "$TAG" ] && echo ${GITHUB_REF#refs/heads/} || echo $TAG)
-          echo "Current branch is: '$BRANCH' (setup in BRANCH TAG environment variable)"
+          echo "Current branch is: '$BRANCH'"
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
       # Install the JDK
       - uses: joschi/setup-jdk@v2.3.0
         with:
           java-version: ${{ matrix.jvm_version }}
-          server-id: ossrh
-          server-username: MAVEN_CENTRAL_USERNAME
-          server-password: MAVEN_CENTRAL_PASSWORD
-          gpg-private-key: ${{ secrets.SIGNING_KEY }}
-          gpg-passphrase: SIGNING_PASSWORD
-      # Install additional packages
+      # Install additional packages, if are present some specific configurations.
       - name: Configure Linux
         shell: bash
         if: ${{ contains(matrix.os, 'ubuntu') }}
@@ -77,6 +73,7 @@ jobs:
       - name: Check
         shell: bash
         run: .github/build-steps/check.sh
+       #Upload coverage report to Codecov by action "codecov/codecov-action@v1"
       - name: CodeCov
         uses: codecov/codecov-action@v1
         with:
@@ -84,9 +81,11 @@ jobs:
   Build-Success:
     runs-on: ubuntu-latest
     needs: Build
+   #If build success, create artifact and upload on GithubActions
     steps:
       - shell: bash
         run: touch ok
+        #Action to upload artifact
       - uses: actions/upload-artifact@v2
         with:
           name: success
@@ -95,7 +94,9 @@ jobs:
     needs: Build-Success
     if: always()
     runs-on: ubuntu-latest
+    #To complete CI pipeline, download artifact created previously.
     steps:
+      #Action to download artifact
       - uses: actions/download-artifact@v2
         with:
           name: success
