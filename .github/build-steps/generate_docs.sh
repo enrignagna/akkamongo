@@ -4,7 +4,7 @@ if [ -x 'gradlew' ]; then
     echo 'Detected gradle wrapper, checking for known tasks'
     if ./gradlew tasks | grep '^scaladoc\s'; then
         echo 'Detected scaladoc task'
-        ./gradlew scaladoc
+        ./gradlew scaladoc --parallel
     else
         echo 'No known docs tasks'
     fi
