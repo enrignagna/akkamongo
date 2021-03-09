@@ -9,10 +9,10 @@ jobs:
       #Execute control of repository
       - name: Checkout
         uses: actions/checkout@v2
-#      #Generate scaladoc of the project, through the specific script.
-#      - name: Generate documentation
-#        shell: bash
-#        run: .github/build-steps/generate_docs.sh
+      #Generate scaladoc of the project, through the specific script.
+      - name: Generate documentation
+        shell: bash
+        run: .github/build-steps/generate_docs.sh
       - name: Gen dummy page
         run: |
             mkdir public
@@ -33,6 +33,6 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v2
         with:
           target_branch: gh-pages
-          build_dir: public #build/docs/scaladoc #Folder of generated scaladoc
+          build_dir: build/docs/scaladoc #Folder of generated scaladoc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
