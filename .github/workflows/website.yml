@@ -9,16 +9,30 @@ jobs:
       #Execute control of repository
       - name: Checkout
         uses: actions/checkout@v2
-      #Generate scaladoc of the project, through the specific script.
-      - name: Generate documentation
-        shell: bash
-        run: .github/build-steps/generate_docs.sh
+#      #Generate scaladoc of the project, through the specific script.
+#      - name: Generate documentation
+#        shell: bash
+#        run: .github/build-steps/generate_docs.sh
+      -  name: Gen dummy page
+        run: |
+            mkdir public
+            cat > public/index.html <<EOL
+            <!doctype html>
+            <html>
+            <head>
+             <title>GitHub Pages deployed!</title>
+            </head>
+            <body>
+             <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through <a href="https://github.com/marketplace/actions/github-pages">GitHub Pages action</a> successfully.</p>
+            </body>
+            </html>
+            EOL
       #Push scaladoc on Github Pages by the action ghaction-github-pages@v2
       - name: Deploy to GitHub Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
         with:
           target_branch: gh-pages
-          build_dir: build/docs/scaladoc #Folder of generated scaladoc
+          build_dir: public #build/docs/scaladoc #Folder of generated scaladoc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
