@@ -1,6 +1,6 @@
 name: Website
 
-on: release
+on: push #release
 
 jobs:
   publish:
@@ -13,20 +13,6 @@ jobs:
       - name: Generate documentation
         shell: bash
         run: .github/build-steps/generate_docs.sh
-      - name: Gen dummy page
-        run: |
-            mkdir public
-            cat > public/index.html <<EOL
-            <!doctype html>
-            <html>
-            <head>
-             <title>GitHub Pages deployed!</title>
-            </head>
-            <body>
-             <p>GitHub Pages with <strong>${{ github.sha }}</strong> commit ID has been deployed through <a href="https://github.com/marketplace/actions/github-pages">GitHub Pages action</a> successfully.</p>
-            </body>
-            </html>
-            EOL
       #Push scaladoc on Github Pages by the action ghaction-github-pages@v2
       - name: Deploy to GitHub Pages
         if: success()
