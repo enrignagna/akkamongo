@@ -1,6 +1,6 @@
 name: Website
 
-on: push #TODO:to change on release
+on: release
 
 jobs:
   publish:
